@@ -1,15 +1,14 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <title>diddy</title>
+    <title>ᶻ 𝗓 𐰁</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<link rel="icon" href="ico.png" type="image/x-icon"> 
+    <link rel="icon" href="ico.png" type="image/x-icon"> 
     <style type="text/css">
-
         body {
             background-color: #326696;
-            margin: 0px;
+            margin: 0;
             overflow: hidden;
             font-family: Monospace;
             font-size: 13px;
@@ -17,7 +16,33 @@
             font-weight: bold;
         }
 
-        #themeSwitcher {
+        #cloudIcon {
+            position: absolute;
+            top: 23%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            color: white;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        #themeSwitcher, #musicPlayer {
+            display: none;
             position: absolute;
             top: 20%;
             left: 50%;
@@ -35,19 +60,11 @@
         #themeSwitcher span:hover {
             text-decoration: underline;
             font-style: italic;
-			user-select: none;
+            user-select: none;
         }
 
-		#musicPlayer {
-            position: absolute;
+        #musicPlayer {
             top: 25%;
-            left: 50%;
-            transform: translate(-50%);
-            background: transparent;
-            
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         #musicPlayer button {
@@ -65,11 +82,11 @@
         a {
             color: #0078ff;
         }
-
-
     </style>
 </head>
 <body>
+
+    <div id="cloudIcon"><i class="fas fa-cloud"></i></div>
 
     <div id="themeSwitcher">
         <span id="day">day</span><span id="night">night</span>
@@ -80,7 +97,6 @@
     </div>
 
     <audio id="audioPlayer" src="lofi.mp3" allow="autoplay; loop"></audio>
-
 
     <script src="/js/ga.js"></script>
     <script type="text/javascript" src="js/three.min.js"></script>
@@ -113,7 +129,6 @@
     </script>
 
     <script type="text/javascript">
-
         if (!Detector.webgl) Detector.addGetWebGLMessage();
 
         var container;
@@ -236,35 +251,66 @@
         function showDay() {
             currentScene = sceneDay;
             container.style.background = 'linear-gradient(0deg, #4584b4 0%, #1e4877 100%)';
+            setFavicon('ico.png');
         }
 
         function showNight() {
             currentScene = sceneNight;
             container.style.background = 'linear-gradient(0deg, rgba(41,41,41,1) 0%, rgba(0,0,0,1) 100%)';
+            setFavicon('ico2.png')
+        }
+
+        function setFavicon(url) {
+            const link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                const newLink = document.createElement('link');
+                newLink.rel = 'icon';
+                newLink.href = url;
+                document.head.appendChild(newLink);
+            } else {
+                link.href = url;
+            }
         }
 
         document.getElementById('day').addEventListener('click', showDay);
         document.getElementById('night').addEventListener('click', showNight);
 
         window.addEventListener('load', () => {
-        const audioPlayer = document.getElementById('audioPlayer');
-        audioPlayer.volume = 0.1; 
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.volume = 0.03;
 
-        audioPlayer.play().catch(error => {
-            console.log('Autoplay prevented:', error);
+            document.getElementById('themeSwitcher').style.display = 'none';
+            document.getElementById('musicPlayer').style.display = 'none';
+            document.getElementById('cloudIcon').style.display = 'block';
+
+            const muteUnmuteButton = document.getElementById('muteUnmute');
+            muteUnmuteButton.addEventListener('click', function() {
+                if (audioPlayer.muted) {
+                    audioPlayer.muted = false;
+                    muteUnmuteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+                } else {
+                    audioPlayer.muted = true;
+                    muteUnmuteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                }
+            });
         });
 
-        const muteUnmuteButton = document.getElementById('muteUnmute');
-        muteUnmuteButton.addEventListener('click', function() {
-            if (audioPlayer.muted) {
-                audioPlayer.muted = false;
-                muteUnmuteButton.innerHTML = '<i class="fas fa-volume-up"></i>'; 
-            } else {
-                audioPlayer.muted = true;
-                muteUnmuteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            }
+        document.getElementById('cloudIcon').addEventListener('click', function() {
+            const cloudIcon = document.getElementById('cloudIcon');
+            cloudIcon.style.transition = 'opacity 0.5s';
+            cloudIcon.style.opacity = '0';
+
+            setTimeout(() => {
+                document.getElementById('themeSwitcher').style.display = 'block';
+                document.getElementById('musicPlayer').style.display = 'block';
+                cloudIcon.style.display = 'none';
+
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+            }, 500); 
         });
-    });
     </script>
 </body>
 </html>
