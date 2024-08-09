@@ -28,31 +28,6 @@
             opacity: 0;
         }
 
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.1);
-                opacity: 0.7;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes scaleFadeOut {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.5);
-                opacity: 0;
-            }
-        }
-
         #themeSwitcher, #musicPlayer {
             display: none;
             position: absolute;
@@ -154,6 +129,8 @@
         #songDetails {
             display: flex;
             flex-direction: column;
+            user-select: none; 
+            cursor: pointer; 
         }
 
         #songName, #artistName {
@@ -161,8 +138,145 @@
             font-size: 14px;
         }
 
-        a {
-            color: #0078ff;
+        #notepadButton {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .notepad {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: auto;
+            cursor: move;
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .remove-notepad {
+            background: transparent;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 16px;
+            left: 13px;
+            rotate: 45deg;
+            font-size: 24px;
+            line-height: 30px;
+            text-align: center;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+
+        .notepad textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        #notepadButton:hover {
+            transform: rotate(45deg);
+        }
+
+        .remove-notepad:hover {
+            transform: rotate(45deg);
+        }
+
+        #notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 17px;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+
+        #notification.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #notification.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleFadeOut {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -170,12 +284,16 @@
 
     <div id="cloudIcon"><i class="fas fa-cloud"></i></div>
 
+    <div id="notification"></div>
+
+    <div id="notepadButton" title=""><i class="fas fa-plus"></i></div>
+
     <div id="themeSwitcher">
         <span id="day">day</span><span id="night">night</span>
     </div>
 
     <div id="musicPlayer">
-        <button id="muteUnmute" title="Mute"><i class="fas fa-volume-up"></i></button>
+        <button id="muteUnmute" title=""><i class="fas fa-volume-up"></i></button>
     </div>
 
     <div id="seekBarContainer">
@@ -387,6 +505,137 @@
                 .catch(error => console.error('Error fetching song info:', error));
         }
 
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.remove('hide');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.classList.add('hide');
+            }, 2000); 
+        }
+
+
+
+        let notepadCount = 0;
+        const MAX_NOTEPADS = 5;
+        let notepads = []; 
+
+        document.getElementById('notepadButton').addEventListener('click', function() {
+            createNotepad();
+        });
+
+        function createNotepad() {
+            if (notepadCount >= MAX_NOTEPADS) {
+                showNotification('Maximum number of notepads reached...');
+                return;
+            }
+
+            const notepad = document.createElement('div');
+            notepad.className = 'notepad';
+            notepad.innerHTML = '<textarea placeholder="Type your notes here..."></textarea>';
+            document.body.appendChild(notepad);
+            positionNotepad(notepad);
+            makeDraggable(notepad);
+
+            notepads.push(notepad); 
+            notepadCount++;
+
+            if (!document.querySelector('.remove-button-container')) {
+                createRemoveButton();
+            }
+        }
+
+        function positionNotepad(notepad) {
+            let x, y;
+            do {
+                x = Math.random() * (window.innerWidth - 200);
+                y = Math.random() * (window.innerHeight - 200);
+            } while (isOverlapping(x, y, 200, 200));
+            
+            notepad.style.left = `${x}px`;
+            notepad.style.top = `${y}px`;
+        }
+
+        function isOverlapping(x, y, width, height) {
+            for (let notepad of notepads) {
+                const rect = notepad.getBoundingClientRect();
+                if (!(x + width < rect.left ||
+                    x > rect.left + rect.width ||
+                    y + height < rect.top ||
+                    y > rect.top + rect.height)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function makeDraggable(element) {
+            let offsetX, offsetY, isDragging = false;
+
+            element.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - element.getBoundingClientRect().left;
+                offsetY = e.clientY - element.getBoundingClientRect().top;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    element.style.left = `${e.clientX - offsetX}px`;
+                    element.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        function createRemoveButton() {
+            const removeButtonContainer = document.createElement('div');
+            removeButtonContainer.className = 'remove-button-container';
+            document.body.appendChild(removeButtonContainer);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-notepad';
+            
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-plus'; 
+            removeButton.appendChild(icon);
+            
+            removeButton.addEventListener('click', function() {
+                removeOldestNotepad();
+            });
+            removeButtonContainer.appendChild(removeButton);
+        }
+
+
+        function removeOldestNotepad() {
+            if (notepads.length === 0) return;
+
+            const notepad = notepads.shift(); 
+            notepad.remove();
+            notepadCount--;
+
+            if (notepads.length === 0) {
+                document.querySelector('.remove-button-container').remove();
+            }
+        }
+
+        document.getElementById('songDetails').addEventListener('click', () => {
+            const songName = document.getElementById('songName').textContent;
+            const artistName = document.getElementById('artistName').textContent;
+            const textToCopy = `${songName} ${artistName}`;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showNotification('Copied to clipboard...');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+
 
         document.getElementById('cloudIcon').addEventListener('click', function() {
             const cloudIcon = document.getElementById('cloudIcon');
@@ -396,7 +645,8 @@
                 document.getElementById('themeSwitcher').style.display = 'block';
                 document.getElementById('musicPlayer').style.display = 'block';
                 document.getElementById('seekBarContainer').style.display = 'block'; 
-                document.getElementById('songInfoBox').style.display = 'block'; 
+                document.getElementById('songInfoBox').style.display = 'block';
+                document.getElementById('notepadButton').style.display = 'block';  
                 cloudIcon.style.display = 'none';
 
                 const audioPlayer = document.getElementById('audioPlayer');
@@ -409,8 +659,13 @@
             }, 1000); 
         });
 
-        
+        document.addEventListener('DOMContentLoaded', () => {
+            const notification = document.createElement('div');
+            notification.id = 'notification';
+            document.body.appendChild(notification);
+        });
 
+        
         window.addEventListener('load', () => {
             document.getElementById('cloudIcon').style.opacity = '1';
             const audioPlayer = document.getElementById('audioPlayer');
