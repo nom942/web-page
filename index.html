@@ -77,12 +77,6 @@
 
         #musicPlayer {
             top: 25%;
-            left: 50%;
-            transform: translate(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: white;
         }
 
         #musicPlayer button {
@@ -98,7 +92,7 @@
         }
 
         #seekBarContainer {
-            display: none;
+            display: none; 
             position: absolute;
             top: calc(24% + 60px); 
             left: 50%;
@@ -345,7 +339,7 @@
             setTimeout(() => {
                 document.getElementById('themeSwitcher').style.display = 'block';
                 document.getElementById('musicPlayer').style.display = 'block';
-                document.getElementById('seekBarContainer').style.display = 'block';
+                document.getElementById('seekBarContainer').style.display = 'block'; 
                 cloudIcon.style.display = 'none';
 
                 const audioPlayer = document.getElementById('audioPlayer');
@@ -357,17 +351,15 @@
         });
 
         window.addEventListener('load', () => {
+            document.getElementById('cloudIcon').style.opacity = '1';
             const audioPlayer = document.getElementById('audioPlayer');
-            const muteUnmuteButton = document.getElementById('muteUnmute');
-            const seekBar = document.getElementById('seekBar');
-
             audioPlayer.volume = 0.03;
 
             document.getElementById('themeSwitcher').style.display = 'none';
             document.getElementById('musicPlayer').style.display = 'none';
-            document.getElementById('seekBarContainer').style.display = 'none';
             document.getElementById('cloudIcon').style.display = 'block';
 
+            const muteUnmuteButton = document.getElementById('muteUnmute');
             muteUnmuteButton.addEventListener('click', function() {
                 if (audioPlayer.muted) {
                     audioPlayer.muted = false;
@@ -397,6 +389,7 @@
                 });
             }
 
+            // Event listener for the end of the song
             audioPlayer.addEventListener('ended', playRandomTrack);
         });
     </script>
