@@ -127,6 +127,40 @@
             cursor: pointer;
         }
 
+        #songInfoBox {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            box-sizing: border-box;
+        }
+
+        #songInfoBox img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        #songDetails {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #songName, #artistName {
+            margin: 0;
+            font-size: 14px;
+        }
+
         a {
             color: #0078ff;
         }
@@ -146,6 +180,14 @@
 
     <div id="seekBarContainer">
         <input type="range" id="seekBar" min="0" value="0" step="1">
+    </div>
+
+    <div id="songInfoBox">
+        <img id="songArt" src="" alt="Song Art">
+        <div id="songDetails">
+            <div id="songName">Song Name</div>
+            <div id="artistName">Artist Name</div>
+        </div>
     </div>
 
     <audio id="audioPlayer" allow="loop"></audio>
@@ -332,6 +374,20 @@
             return `music/${trackNumber}.mp3`;
         }
 
+        function updateSongInfo() {
+            const trackNumber = parseInt(document.getElementById('audioPlayer').src.match(/(\d+)\.mp3$/)[1], 10);
+            fetch('music/music-info.json')
+                .then(response => response.json())
+                .then(data => {
+                    const songInfo = data.find(song => song.number === trackNumber) || {};
+                    document.getElementById('songArt').src = `music/music-art/${trackNumber}.jpg`;
+                    document.getElementById('songName').textContent = songInfo.name || 'Song Name';
+                    document.getElementById('artistName').textContent = songInfo.author ? `by ${songInfo.author}` : 'by Artist Name';
+                })
+                .catch(error => console.error('Error fetching song info:', error));
+        }
+
+
         document.getElementById('cloudIcon').addEventListener('click', function() {
             const cloudIcon = document.getElementById('cloudIcon');
             cloudIcon.style.animation = 'scaleFadeOut 1s forwards';
@@ -340,6 +396,7 @@
                 document.getElementById('themeSwitcher').style.display = 'block';
                 document.getElementById('musicPlayer').style.display = 'block';
                 document.getElementById('seekBarContainer').style.display = 'block'; 
+                document.getElementById('songInfoBox').style.display = 'block'; 
                 cloudIcon.style.display = 'none';
 
                 const audioPlayer = document.getElementById('audioPlayer');
@@ -347,8 +404,12 @@
                 audioPlayer.play().catch(error => {
                     console.log('Autoplay prevented:', error);
                 });
+
+                updateSongInfo();
             }, 1000); 
         });
+
+        
 
         window.addEventListener('load', () => {
             document.getElementById('cloudIcon').style.opacity = '1';
@@ -364,7 +425,7 @@
                 if (audioPlayer.muted) {
                     audioPlayer.muted = false;
                     muteUnmuteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-                } else {
+                } else {  
                     audioPlayer.muted = true;
                     muteUnmuteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 }
@@ -384,12 +445,12 @@
 
             function playRandomTrack() {
                 audioPlayer.src = getRandomTrack();
+                updateSongInfo();
                 audioPlayer.play().catch(error => {
                     console.log('Autoplay prevented:', error);
                 });
             }
 
-            // Event listener for the end of the song
             audioPlayer.addEventListener('ended', playRandomTrack);
         });
     </script>
