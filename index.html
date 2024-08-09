@@ -25,6 +25,7 @@
             color: white;
             cursor: pointer;
             animation: pulse 1.5s infinite;
+            opacity: 0;
         }
 
         @keyframes pulse {
@@ -38,6 +39,17 @@
             100% {
                 transform: translate(-50%, -50%) scale(1);
                 opacity: 1;
+            }
+        }
+
+        @keyframes scaleFadeOut {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
             }
         }
 
@@ -96,7 +108,7 @@
         <button id="muteUnmute" title="Mute"><i class="fas fa-volume-up"></i></button>
     </div>
 
-    <audio id="audioPlayer" src="lofi.mp3" allow="autoplay; loop"></audio>
+    <audio id="audioPlayer" allow="loop"></audio>
 
     <script src="/js/ga.js"></script>
     <script type="text/javascript" src="js/three.min.js"></script>
@@ -275,7 +287,30 @@
         document.getElementById('day').addEventListener('click', showDay);
         document.getElementById('night').addEventListener('click', showNight);
 
+        function getRandomTrack() {
+            const trackNumber = Math.floor(Math.random() * 9) + 1;
+            return `music/${trackNumber}.mp3`;
+        }
+
+        document.getElementById('cloudIcon').addEventListener('click', function() {
+            const cloudIcon = document.getElementById('cloudIcon');
+            cloudIcon.style.animation = 'scaleFadeOut 1s forwards';
+
+            setTimeout(() => {
+                document.getElementById('themeSwitcher').style.display = 'block';
+                document.getElementById('musicPlayer').style.display = 'block';
+                cloudIcon.style.display = 'none';
+
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = getRandomTrack();
+                audioPlayer.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+            }, 1000); 
+        });
+
         window.addEventListener('load', () => {
+            document.getElementById('cloudIcon').style.opacity = '1';
             const audioPlayer = document.getElementById('audioPlayer');
             audioPlayer.volume = 0.03;
 
@@ -293,23 +328,6 @@
                     muteUnmuteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 }
             });
-        });
-
-        document.getElementById('cloudIcon').addEventListener('click', function() {
-            const cloudIcon = document.getElementById('cloudIcon');
-            cloudIcon.style.transition = 'opacity 0.5s';
-            cloudIcon.style.opacity = '0';
-
-            setTimeout(() => {
-                document.getElementById('themeSwitcher').style.display = 'block';
-                document.getElementById('musicPlayer').style.display = 'block';
-                cloudIcon.style.display = 'none';
-
-                const audioPlayer = document.getElementById('audioPlayer');
-                audioPlayer.play().catch(error => {
-                    console.log('Autoplay prevented:', error);
-                });
-            }, 500); 
         });
     </script>
 </body>
