@@ -77,6 +77,12 @@
 
         #musicPlayer {
             top: 25%;
+            left: 50%;
+            transform: translate(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
         }
 
         #musicPlayer button {
@@ -89,6 +95,42 @@
 
         #musicPlayer button:hover {
             color: #ccc;
+        }
+
+        #seekBarContainer {
+            display: none;
+            position: absolute;
+            top: calc(24% + 60px); 
+            left: 50%;
+            transform: translate(-50%);
+            color: white;
+        }
+
+        #seekBar {
+            -webkit-appearance: none;
+            width: 150px; 
+            height: 5px;
+            background: #ffffff50;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #seekBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #seekBar::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
         }
 
         a {
@@ -106,6 +148,10 @@
 
     <div id="musicPlayer">
         <button id="muteUnmute" title="Mute"><i class="fas fa-volume-up"></i></button>
+    </div>
+
+    <div id="seekBarContainer">
+        <input type="range" id="seekBar" min="0" value="0" step="1">
     </div>
 
     <audio id="audioPlayer" allow="loop"></audio>
@@ -299,6 +345,7 @@
             setTimeout(() => {
                 document.getElementById('themeSwitcher').style.display = 'block';
                 document.getElementById('musicPlayer').style.display = 'block';
+                document.getElementById('seekBarContainer').style.display = 'block';
                 cloudIcon.style.display = 'none';
 
                 const audioPlayer = document.getElementById('audioPlayer');
@@ -310,15 +357,17 @@
         });
 
         window.addEventListener('load', () => {
-            document.getElementById('cloudIcon').style.opacity = '1';
             const audioPlayer = document.getElementById('audioPlayer');
+            const muteUnmuteButton = document.getElementById('muteUnmute');
+            const seekBar = document.getElementById('seekBar');
+
             audioPlayer.volume = 0.03;
 
             document.getElementById('themeSwitcher').style.display = 'none';
             document.getElementById('musicPlayer').style.display = 'none';
+            document.getElementById('seekBarContainer').style.display = 'none';
             document.getElementById('cloudIcon').style.display = 'block';
 
-            const muteUnmuteButton = document.getElementById('muteUnmute');
             muteUnmuteButton.addEventListener('click', function() {
                 if (audioPlayer.muted) {
                     audioPlayer.muted = false;
@@ -328,6 +377,27 @@
                     muteUnmuteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 }
             });
+
+            audioPlayer.addEventListener('loadedmetadata', () => {
+                seekBar.max = audioPlayer.duration;
+            });
+
+            audioPlayer.addEventListener('timeupdate', () => {
+                seekBar.value = audioPlayer.currentTime;
+            });
+
+            seekBar.addEventListener('input', () => {
+                audioPlayer.currentTime = seekBar.value;
+            });
+
+            function playRandomTrack() {
+                audioPlayer.src = getRandomTrack();
+                audioPlayer.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+            }
+
+            audioPlayer.addEventListener('ended', playRandomTrack);
         });
     </script>
 </body>
