@@ -14,10 +14,34 @@
             font-size: 13px;
             text-align: center;
             font-weight: bold;
+            cursor: none;
+        }
+
+        .cursor {
+            background-color: rgba(255, 255, 255, 0.5); 
+            border-radius: 50%; 
+            height: 1rem;
+            width: 1rem;
+            pointer-events: none;
+            position: fixed; 
+            transform: translate(-50%, -50%); 
+            z-index: 2000; 
+            transition: transform scale opacity 0.3s;
+        }
+
+        .cursor.hide {
+            opacity: 0;
         }
 
         ::-webkit-scrollbar {
             width: 0px;
+        }
+
+        #clickOverlay {
+            position: fixed;
+            width: 100svw;
+            height: 100svh;
+            cursor: none;
         }
 
         #cloudIcon {
@@ -27,7 +51,7 @@
             transform: translate(-50%, -50%);
             font-size: 60px;
             color: white;
-            cursor: pointer;
+            cursor: none;
             animation: pulse 1.5s infinite;
             opacity: 0;
             z-index: 99999;
@@ -43,32 +67,33 @@
             font-family: monospace;
         }
 
-            #themeSwitcher span {
-                cursor: pointer;
-                margin: 0 10px;
-            }
+        #themeSwitcher span {
+            cursor: none;
+            margin: 0 10px;
+            user-select: none;
+        }
 
-                #themeSwitcher span:hover {
-                    text-decoration: underline;
-                    font-style: italic;
-                    user-select: none;
-                }
+        #themeSwitcher span:hover {
+            text-decoration: underline;
+            font-style: italic;
+            user-select: none;
+        }
 
         #musicPlayer {
             top: 25%;
         }
 
-            #musicPlayer button {
-                background: none;
-                border: none;
-                color: #fff;
-                cursor: pointer;
-                font-size: 24px;
-            }
+        #musicPlayer button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: none;
+            font-size: 24px;
+        }
 
-                #musicPlayer button:hover {
-                    color: #ccc;
-                }
+        #musicPlayer button:hover {
+            color: #ccc;
+        }
 
         #seekBarContainer {
             position: absolute;
@@ -85,33 +110,30 @@
             background: #ffffff50;
             border-radius: 5px;
             outline: none;
-            cursor: pointer;
+            cursor: none;
         }
 
-            #seekBar::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                width: 15px;
-                height: 15px;
-                background: #ffffff;
-                border-radius: 2px;
-                cursor: pointer;
-            }
+        #seekBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 2px;
+            cursor: none;
+        }
 
-            #seekBar::-moz-range-thumb {
-                width: 15px;
-                height: 15px;
-                background: #ffffff;
-                border-radius: 2px;
-                cursor: pointer;
-            }
+        #seekBar::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 2px;
+            cursor: none;
+        }
 
         #songInfoBox {
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: absolute;
+            top: 10px;
+            right: 10px;
             background-color: #ffffff11;
             backdrop-filter: blur(10px);
             border: 1px solid #cccccc55;
@@ -120,14 +142,19 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 80%;
             box-sizing: border-box;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
         }
 
-            #songInfoBox img {
-                width: 50px;
-                height: 50px;
-                margin-right: 10px;
-                border-radius: 5px;
-            }
+        #songInfoBox img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 5px;
+            user-select: none;
+        }
 
         #songDetails {
             display: flex;
@@ -139,6 +166,73 @@
         #songName, #artistName {
             margin: 0;
             font-size: 14px;
+        }
+
+        #songListButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid #cccccc55; 
+            border-radius: 5px; 
+            padding: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+            color: white; 
+            font-size: 14px; 
+            cursor: none; 
+            transition: background-color 0.3s, color 0.3s; 
+            z-index: 1000; 
+        }
+
+        #songListButton button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: monospace;
+            user-select: none;
+            z-index: 1000; 
+        }
+
+        #songList {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.1); 
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #cccccc55;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #songList.hidden {
+            display: none;
+        }
+
+        #songList ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #songList li {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer; 
+        }
+
+        #songList img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 5px;
+            cursor: pointer; 
         }
 
         #notification {
@@ -156,13 +250,13 @@
             transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
         }
 
-            #notification.show {
-                opacity: 1;
-            }
+        #notification.show {
+            opacity: 1;
+        }
 
-            #notification.hide {
-                opacity: 0;
-            }
+        #notification.hide {
+            opacity: 0;
+        }
 
         @keyframes fadeIn {
             0% {
@@ -212,16 +306,6 @@
             }
         }
 
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         #afterStart {
             opacity: 0;
             pointer-events: none;
@@ -241,31 +325,42 @@
 </head>
 <body>
 
-    <div id="cloudIcon" onclick="startSite()"><i class="fas fa-cloud"></i></div>
+    <div id="cloudIcon" onclick="startSite()" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()"><i class="fas fa-cloud"></i></div>
+    <div id="clickOverlay" onclick="startSite()"></div>
+
+    <div class="cursor" id="customCursor"></div>
 
     <div id="afterStart">
         <div id="notification"></div>
 
-        <div id="themeSwitcher">
+        <div id="themeSwitcher" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()">
             <span id="day">day</span><span id="night">night</span>
         </div>
 
-        <div id="musicPlayer">
+        <div id="musicPlayer" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()">
             <button id="muteUnmute" title=""><i class="fas fa-volume-up"></i></button>
         </div>
 
-        <div id="seekBarContainer">
+        <div id="seekBarContainer" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()">
             <input type="range" id="seekBar" min="0" value="0" step="1">
         </div>
 
         <div id="songInfoBox">
             <img id="songArt" src="" alt="Song Art">
-            <div id="songDetails">
+            <div id="songDetails" onmouseenter="hideCustomCursor()" onmouseleave="showCustomCursor()">
                 <div id="songName">Song Name</div>
                 <div id="artistName">Artist Name</div>
             </div>
         </div>
 
+        <div id="songListButton">
+            <button onclick="toggleSongList()" onmouseenter="hideCustomCursor()" onmouseleave="showCustomCursor()">Track List</button>
+        </div>
+        
+        <div id="songList" onmouseenter="hideCustomCursor()" onmouseleave="showCustomCursor()" class="hidden">
+            <ul id="songListItems"></ul>
+        </div>        
+        
         <audio id="audioPlayer" allow="loop"></audio>
     </div>
 
@@ -314,6 +409,32 @@
                 console.log('Autoplay prevented:', error);
             });
 
+        }
+
+        function hideCustomCursor() {
+            const customCursor = document.getElementById('customCursor');
+
+            customCursor.style.opacity = '0';
+            customCursor.style.scale = '0';
+        }
+
+        function showCustomCursor() {
+            const customCursor = document.getElementById('customCursor');
+
+            customCursor.style.opacity = '1';
+            customCursor.style.scale = '1';
+        }
+
+        function hoverSizeUp() {
+            const customCursor = document.getElementById('customCursor');
+
+            customCursor.style.scale = '1.3';
+        }
+
+        function hoverSizeDown() {
+            const customCursor = document.getElementById('customCursor');
+
+            customCursor.style.scale = '1';
         }
     </script>
 
@@ -414,10 +535,8 @@
             container.classList.add('cloudsWrapper');
 
             if (container) {
-                // Select the single child element of 'container'
                 let child = container.firstElementChild;
 
-                // Check if the child exists and apply the ID 'cloudCanvas'
                 if (child) {
                     child.id = 'cloudCanvas';
                 } else {
@@ -427,6 +546,7 @@
                 console.log('Container element not found');
             }
         }
+        
 
         function onDocumentMouseMove(event) {
             mouseX = (event.clientX - windowHalfX) * 0.1;
@@ -480,8 +600,14 @@
         document.getElementById('day').addEventListener('click', showDay);
         document.getElementById('night').addEventListener('click', showNight);
 
+        let lastTrackNumber = null;
+
         function getRandomTrack() {
-            const trackNumber = Math.floor(Math.random() * 9) + 1;
+            let trackNumber;
+            do {
+                trackNumber = Math.floor(Math.random() * 10) + 1;
+            } while (trackNumber === lastTrackNumber);
+            lastTrackNumber = trackNumber;
             return `music/${trackNumber}.mp3`;
         }
 
@@ -510,6 +636,48 @@
             }, 2000);
         }
 
+        function toggleSongList() {
+            const songList = document.getElementById('songList');
+            songList.classList.toggle('hidden');
+        }
+
+        function playSong(trackNumber) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = `music/${trackNumber}.mp3`;
+            audioPlayer.play().catch(error => {
+                console.log('Autoplay prevented:', error);
+            });
+            updateSongInfo();
+        }
+
+
+        function populateSongList() {
+            fetch('music/music-info.json')
+                .then(response => response.json())
+                .then(data => {
+                    const songListItems = document.getElementById('songListItems');
+                    songListItems.innerHTML = '';
+                    data.forEach(song => {
+                        const listItem = document.createElement('li');
+                        const songArt = document.createElement('img');
+                        songArt.src = `music/music-art/${song.number}.jpg`;
+                        const songName = document.createElement('span');
+                        songName.textContent = `${song.name} by ${song.author}`;
+                        listItem.appendChild(songArt);
+                        listItem.appendChild(songName);
+                        songListItems.appendChild(listItem);
+
+                        listItem.addEventListener('click', () => {
+                            playSong(song.number);
+                        })
+                    });
+                })
+                .catch(error => console.error('Error fetching song info:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', populateSongList);
+
+
         document.getElementById('songDetails').addEventListener('click', () => {
             const songName = document.getElementById('songName').textContent;
             const artistName = document.getElementById('artistName').textContent;
@@ -520,6 +688,26 @@
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
             });
+        });
+
+        document.getElementById('clickOverlay').addEventListener('click', function () {
+            const cloudIcon = document.getElementById('cloudIcon');
+            const clickOverlay  = document.getElementById('clickOverlay');
+            cloudIcon.style.animation = 'scaleFadeOut 1s forwards';
+
+            setTimeout(() => {
+                document.getElementById('afterStart').style.opacity = '1';
+                cloudIcon.style.display = 'none';
+                clickOverlay.style.display = 'none';
+
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = getRandomTrack();
+                audioPlayer.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+
+                updateSongInfo();
+            }, 1000);
         });
 
 
@@ -541,12 +729,30 @@
             }, 1000);
         });
 
+        document.addEventListener('mousemove', function(event) {
+            const cursor = document.querySelector('.cursor');
+            cursor.style.left = `${event.clientX}px`;
+            cursor.style.top = `${event.clientY}px`;
+        });
+
+        document.addEventListener('mouseenter', function() {
+            const cursor = document.querySelector('.cursor');
+
+            cursor.classList.remove('hide');
+        });
+
+        document.addEventListener('mouseleave', function() {
+            const cursor = document.querySelector('.cursor');
+
+            cursor.classList.add('hide');
+        });
+
+
         document.addEventListener('DOMContentLoaded', () => {
             const notification = document.createElement('div');
             notification.id = 'notification';
             document.body.appendChild(notification);
         });
-
 
         window.addEventListener('load', () => {
             document.getElementById('cloudIcon').style.opacity = '1';
