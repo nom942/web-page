@@ -18,19 +18,27 @@
         }
 
         .cursor {
-            background-color: rgba(255, 255, 255, 0.5); 
-            border-radius: 50%; 
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
             height: 1rem;
             width: 1rem;
             pointer-events: none;
-            position: fixed; 
-            transform: translate(-50%, -50%); 
-            z-index: 2000; 
-            transition: transform scale opacity 0.3s;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
         .cursor.hide {
             opacity: 0;
+        }
+
+        .cursor.scale-up {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .cursor.scale-down {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         ::-webkit-scrollbar {
@@ -55,6 +63,16 @@
             animation: pulse 1.5s infinite;
             opacity: 0;
             z-index: 99999;
+        }
+
+        #cloudIcon .cursorIcon {
+            position: absolute;
+            top: 53%;
+            left: 49%;
+            transform: translate(-50%, -50%);
+            font-size: 18px; 
+            color: #4584b4; 
+            pointer-events: none; 
         }
 
         #themeSwitcher, #musicPlayer {
@@ -208,6 +226,7 @@
             border: 1px solid #cccccc55;
             max-height: 300px;
             overflow-y: auto;
+            user-select: none;
         }
 
         #songList.hidden {
@@ -325,7 +344,10 @@
 </head>
 <body>
 
-    <div id="cloudIcon" onclick="startSite()" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()"><i class="fas fa-cloud"></i></div>
+    <div id="cloudIcon" onclick="startSite()" onmouseenter="hoverSizeUp()" onmouseleave="hoverSizeDown()">
+        <i class="fas fa-cloud"></i>
+        <div class="cursorIcon"><i class="fas fa-mouse-pointer"></i></div>
+    </div>    
     <div id="clickOverlay" onclick="startSite()"></div>
 
     <div class="cursor" id="customCursor"></div>
@@ -413,28 +435,22 @@
 
         function hideCustomCursor() {
             const customCursor = document.getElementById('customCursor');
-
-            customCursor.style.opacity = '0';
-            customCursor.style.scale = '0';
+            customCursor.classList.add('hide');
         }
 
         function showCustomCursor() {
             const customCursor = document.getElementById('customCursor');
-
-            customCursor.style.opacity = '1';
-            customCursor.style.scale = '1';
+            customCursor.classList.remove('hide');
         }
 
         function hoverSizeUp() {
             const customCursor = document.getElementById('customCursor');
-
-            customCursor.style.scale = '1.3';
+            customCursor.classList.add('scale-up');
         }
 
         function hoverSizeDown() {
             const customCursor = document.getElementById('customCursor');
-
-            customCursor.style.scale = '1';
+            customCursor.classList.remove('scale-up');
         }
     </script>
 
