@@ -278,6 +278,29 @@
             opacity: 0;
         }
 
+        #githubLogo {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.5;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+            cursor: none;
+        }
+
+        #githubLogo:hover {
+            opacity: 1;
+        }
+
+        #githubLogo i {
+            font-size: 35px;
+            color: white;
+            cursor: pointer;
+            cursor: none;
+        }
+
+
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -350,6 +373,12 @@
         <div class="cursorIcon"><i class="fas fa-mouse-pointer"></i></div>
     </div>    
     <div id="clickOverlay" onclick="startSite()"></div>
+
+    <div id="githubLogo">
+        <a href="https://github.com/nom942" target="_blank">
+            <i class="fab fa-github"></i>
+        </a>
+    </div>
 
     <div class="cursor" id="customCursor"></div>
 
