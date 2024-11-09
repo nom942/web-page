@@ -48,5 +48,16 @@
         "number": 10,
         "name": "Clouds",
         "author": "Alex G"
+    },
+    {
+        
+        "number": 11,
+        "name": "The Last of Us",
+        "author": "Gustavo Santaolalla"
+    },
+    {
+        "number": 12,
+        "name": "Home",
+        "author": "Gustavo Santaolalla"
     }
 ]
