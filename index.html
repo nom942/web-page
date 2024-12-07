@@ -651,7 +651,7 @@
         function getRandomTrack() {
             let trackNumber;
             do {
-                trackNumber = Math.floor(Math.random() * 10) + 1;
+                trackNumber = Math.floor(Math.random() * 12) + 1;
             } while (trackNumber === lastTrackNumber);
             lastTrackNumber = trackNumber;
             return `music/${trackNumber}.mp3`;
